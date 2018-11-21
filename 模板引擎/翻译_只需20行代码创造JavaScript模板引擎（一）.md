@@ -18,7 +18,7 @@
 
 而我希望用原生JavaScript去写，这样也可以在浏览器上运行。
 
-我是从John Resig的博客[](https://johnresig.com/blog/javascript-micro-templating/)得到制作这个简易版模板引擎的灵感。
+我是从[John Resig的博客](https://johnresig.com/blog/javascript-micro-templating/)得到制作这个简易版模板引擎的灵感。
 
 我稍微改动了一下，缩减到20行。 这个脚本的工作原理，非常有趣。
 
@@ -74,8 +74,6 @@ var regEx = /<%([^%>]+)?%>/g
 ```
 
 这个正则表达式是什么意思呢？
-
-如果实在看不懂正则，可以看下这篇博客。 [正则表达式-基础知识Review](https://segmentfault.com/a/1190000016599340)
 
 在一个字符窜中，匹配以"<%"开头 和 "%>" 结尾的字符窜片段。
 
@@ -211,9 +209,3 @@ data = {
     profile: {age:29}
 }
 ```
-
-
-
-
-
-

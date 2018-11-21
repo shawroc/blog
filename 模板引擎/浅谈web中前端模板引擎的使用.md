@@ -113,12 +113,11 @@ document.querySelector('div').innerHTML = htmlStr;
 
 感兴趣的话，可以看看我翻译的两篇文章。
 
-[翻译_20行代码创造JavaScript模板引擎（一）](https://segmentfault.com/a/1190000016678647)
+[翻译_20行代码创造JavaScript模板引擎（一）](https://github.com/shawroc/blog/blob/master/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/%E7%BF%BB%E8%AF%91_%E5%8F%AA%E9%9C%8020%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%9B%E9%80%A0JavaScript%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%EF%BC%88%E4%B8%80%EF%BC%89.md)
 
-[翻译_只需20行代码创造JavaScript模板引擎（二）](https://segmentfault.com/a/1190000016802068)
+[翻译_只需20行代码创造JavaScript模板引擎（二）](https://github.com/shawroc/blog/blob/master/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/%E7%BF%BB%E8%AF%91_%E5%8F%AA%E9%9C%8020%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%9B%E9%80%A0JavaScript%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%EF%BC%88%E4%BA%8C%EF%BC%89.md)
 
-[字符串替换模板引擎github地址]
-()
+[字符串替换模板引擎github地址](https://github.com/shawroc/blog/blob/master/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/templateEngine.js)
 
 
 
