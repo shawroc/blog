@@ -701,7 +701,7 @@ system.ps = /playstation/i.test(userAgent);
 
 对于Wii，只要检测字符串"Wii"就够了，而其他代码将发现这是一个Opera浏览器，并将正确版本号保存在client.browser.opera中。对于, Playstation，则使用正则表达式来以不区分大小写的方式测试用户代理字符串。
 
-完整版代码[客户端检测完整版代码github]()
+完整版代码[客户端检测完整版代码github](https://github.com/shawroc/blog/blob/master/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%A3%80%E6%B5%8B/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%A3%80%E6%B5%8B.js)
 
 
 **用户代理检测是客户端检测的最后一个选择。只要可能，都应该优先采取能力检测和怪癖检测。用户代理检测一般适用于下列情形。**
