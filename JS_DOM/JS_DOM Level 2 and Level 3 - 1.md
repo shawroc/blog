@@ -317,3 +317,113 @@ var doc = document.implementation.createDocument("http://www.w3.org/1999/xhtml",
 这样，就创建了一个带有适当命名空间和文档类型的新XHTML文档。
 不过，新文档当前只有文档元素\<html>，剩下的所有元素都需要继续添加。
 
+3. Node类型的变化
+
+Node类型中唯一与命名空间无关的变化，就是添加了isSupported()方法。
+与DOM1级为document.implementation引入的hasFeature()方法类似，isSupported()方法用于确定当前节点具有什么能力。
+
+这个方法也接受相同的两个参数：特性名和特性版本号。
+
+如果浏览器实现了相应特性，而且能够基于给定节点执行该特性，isSupported()就返回true。
+
+```
+if(documemt.body.isSupported("HTML", "2.0")){
+    //do something
+
+    //Chrome没有该方法
+}
+```
+
+由于不同实现在决定对什么特性返回true或false时并不一致，这个方法同样也存在与hasFeature()方法相同的问题。
+
+为此，建议在确定某个特性是否可用时，最好还是使用能力检测。
+
+DOM3级引入了两个辅助比较节点的方法：isSameNode()和isEqualNode()。
+这两个方法都接受一个节点参数，并在传入节点与引用的节点相同或相等时返回true。
+所谓相同，指的是两个节点引用的是同一个对象。
+而所谓相等，指的是两个节点是相同的类型，具有相等的属性（nodeName、nodeValue等等），而且它们的attributes和childNodes属性也相等（相同位置包含相同的值）。
+
+```
+var div1 = document.createElement("div");
+div1.setAttribute("class", "box");
+
+var div2 = document.createElement("div");
+div2.setAttribute("class", "box");
+
+console.log(div1.isSameNode(div2)); // true
+console.log(div2.isEqualNode(div1)); // true
+console.log(div1.isSameNode(div2)); //false
+```
+
+这里创建了两个具有相同特性的\<div>元素。
+这两个元素相等，但不相同。
+
+DOM3级还针对DOM节点添加额外数据引入了新方法。其中，setUserData()方法会将数据指向节点，它接受3个参数：要设置的键、实际的数据（可以是任何数据类型）和处理函数。
+
+以下代码可以将数据指定给一个节点。
+
+```
+document.body.setUserData("name", "Nicholas", function(){});
+```
+
+然后，使用getUserData()并传入相同的键，就可以取得该数据。
+
+```
+var value = document.body.getUserData("name");
+```
+
+传入setUserData()中的处理函数会在带有数据的节点被赋值、删除、重命名或引入一个文档时调用，因而你可以实现决定在上述操作发生时如何处理用户数据。
+
+处理函数接受5个参数：表示操作类型的数值（1表示复制，2表示导入，3表示删除，4表示重命名）、数据键、数据值、源节点和目标节点。
+
+在删除节点时，源节点是null；除在复制节点时，目标节点均为null。
+在函数内部，你可以决定如何存储数据。
+
+来看下面这个例子。
+
+```
+var div = document.createElement("div");
+div.setUserData("name", "Nicholas", function(operation, key, value, src, dest) {
+    if(operation === 1) {
+        dest.setUserData(key, value, function(){});
+    }
+})
+
+var newDiv = div.cloneNode(true);
+console.log(newDiv.getUserData("name")); //"Nicholas"
+```
+
+这里，先创建了一个\<div>元素，然后又为它添加了一些数据（用户数据）。
+在使用cloneNode()复制这个元素时，就会调用处理函数，从而将数据自动复制到了副本节点。
+结果在通过副节点调用getUserData()时，就会返回与原始节点中包含的相同的值。
+
+4. 框架的变化
+
+框架和内嵌框架分别用HTMLFrameElement和HTMLIFrameElement表示，它们在DOM2级中都有了一个新属性， 名叫contentDocument。
+
+这个属性包含一个指针，指向表示框架内容的文档对象。在此之前，无法直接通过元素取得这个文档对象（只能使用frames集合）。
+
+可以像下面这样使用这个属性。
+
+```
+var iframe = document.getElementById("myIframe");
+var iframeDoc = iframe.contentDocument; //在IE8之前的版本中无效
+```
+
+由于contentDocument属性是Document类型的实例，因此可以像其他HTML文档一样使用它，包括所有属性和方法。
+
+Opera、Firefox、Safari和Chrome支持这个属性。
+IE8之前不支持框架中的contentDocument属性，但支持一个名叫contentWindow的属性，该属性返回框架的window对象，而这个window对象又有一个document属性。
+
+因此，要想在上述所有浏览器中访问内嵌框架的文档对象，可以使用下列代码。
+
+```
+var iframe = document.getElementById("myIframe");
+
+var iframeDoc = iframe.documentContent || iframe.contentWindow.document;
+```
+
+所有浏览器都支持contentWindow属性。
+
+访问框架或内嵌框架的文档对象要受到跨域安全策略的限制。
+如果某个框架中的页面来自其它域或不同子域，或者使用了不同的协议，那么要访问这个框架的文档对象就会导致错误。
