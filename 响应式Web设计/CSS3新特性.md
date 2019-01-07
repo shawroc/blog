@@ -811,3 +811,507 @@ JavaScript和jQuery都是从0开始计数的。
 
 **这里我们连缀使用了基于nth的伪类选择符。而这里的关键，是要理解第一项并不决定接下来的选择范围，而是决定每个选择范围中必须匹配的元素。对前面的例子而言，第一个元素必须是每4个中的第一个元素，同时必须是最后4个中的一个。**
 
+### :not
+
+另一个有用的伪类选择符是表示“取反”的:not。
+这个选择符用于选择 “非······”。
+比如 有如下标记：
+
+```
+<div class="a-div"></div>
+<div class="a-div"></div>
+<div class="a-div not-me"></div>
+<div class="a-div"></div>
+```
+
+和以下CSS：
+
+```
+div {
+    display: inline-block;
+    height: 2rem;
+    width: 2rem;
+    background-color: blue;
+}
+
+.a-div:not(.not-me) {
+    background-color: orange;
+    border-radius: 50%;
+}
+```
+
+最后一条规则会给所有不包含 .not-me 类的元素添加橙色背景和圆角。
+
+### :empty
+
+有没有遇到过只添加了一些内边距，而内容会将来某个时刻动态插入的元素？
+这个元素有时候有内容，有时候没有。
+问题在于，在这个元素没有内容时，它的内边距还在。
+
+比如这个例子：
+
+```
+<div class="thing"></div>
+
+.thing {
+    padding: 1rem;
+    background-color: violet;
+}
+```
+
+虽然它没有内容，但仍然可以看到背景颜色。
+好在我们可以这样隐藏它：
+
+```
+.thing:empty {
+    display: none;
+}
+```
+
+不过，在使用:empty选择符也要注意，像这样的元素看起来是空的：
+
+```
+<div class="thing"> </div>
+```
+
+而实际上并不是。这是因为其中有一个空格。空格跟空是两码事！
+
+还有，注释不算内容，所以像这样包含注释而不包含空格的元素，也是空的：
+
+```
+<div class="thing"><!--I'm empty, honest I am --></div>
+```
+
+**修订伪元素**
+
+伪类从CSS2开始引入，CSS3又对其语法进行了修订。
+回忆一下，p:first-line会选择\<p>标签中的第一行。
+p:first-letter 会选择第一个字符。
+
+CSS3要求把这种伪元素与伪类区分开。
+因此，现在应该写 p::first-letter。
+
+要注意，IE8及更低版本的IE不支持两个冒号的语法。
+
+### :first-line
+
+::first-line 伪元素选择的目标根据视口大小不同而不同，这是最关键的。比如，如下规则：
+
+```
+p::first-line {
+    color: #ff0cff;
+}
+```
+
+会让第一行文本显示成粉红色。而且，随着视口大小变化，呈现粉红色的文本长度也会变化。
+
+这样，不用修改标记，始终都能确保第一行被选中。
+
+在响应式设计中，利用这个伪元素可以轻松做到让第一行与其他行的样式不同。
+
+## CSS 自定义属性和变量
+
+随着CSS预处理器的流行，CSS也慢慢出现了可编程的特性。
+首先就是自定义属性。
+虽然经常被称为变量，但作为变量并非自定义属性的唯一用途。
+
+具体内容可查看[规范](http://dev.w3.org/csswg/css-variables/)。
+不过，浏览器实现的支持并不多。
+
+CSS自定义属性可以存储信息，这些信息可以在样式表的其他地方使用，也可以通过JavaScript操作。
+举个简单的例子，可以把font-family属性的值保存为自定义属性，然后再在需要的地方引用它。
+
+以下就是创建自定义属性的语法：
+
+```
+:root {
+    --MainFont: 'Helvetica Neue', Helvetic, Arial, sans-serif;
+}
+```
+
+这里，我们使用:root伪类把自定义属性保存在文档根元素上（可以保存到任何规则中）。
+
+```
+:root 伪类始终引用文档结构中最外层的亲元素。
+在HTML文档中，这个亲元素就是html标签，但对SVG文档而言，则会引用不同的元素。
+```
+
+自定义属性以两个短划线开头，接着是自定义属性的名字，然后结尾与常规CSS属性一样，都是一个冒号。
+
+然后，引用自定义属性的时候就可以用 var()，像这样:
+
+```
+.Title {
+    font-family: var(--MainFont);
+}
+```
+
+一方面，可以通过这种方式存储任意多个自定义属性。
+另一方面，不管什么时候修改一个自定义属性的值，所有引用它的规则，无论有多少，都会自动更新，而无需分别去修改每一条规则。
+
+将来，JavaScript有望可以操作自定义属性。
+关于这些 “疯狂想法” 的更多信息，可以参考[CSS Extension模块](http://dev.w3.org/csswg/css-extensions/)。
+
+## CSS calc
+
+是不是经常在布局的时候需要做类似这样的计算：“它应该是父元素宽度的一半减去10像素”？
+
+这样的计算在响应式设计中非常有用，因为我们提前并不知道屏幕大小。
+
+好在CSS为我们提供了实现这种计算的方法，那就是calc()函数。
+
+以下就是一个示例：
+
+```
+.thing {
+    width: calc( 50% - 10px );
+}
+```
+
+加、减、乘、除都没问题，这样就可以解决以前非得用JavaScript才能解决的一堆问题。
+
+而且，浏览器对calc()函数的支持也很好，除了 Android 4.3 及以下版本中的Chrome。
+
+相关规范可以参见[这里](http://www.w3.org/TR/css3-values/)。
+
+## CSS Level 4 选择符
+
+CSS Selectors Level 4 中规定了很多新的选择符类型。
+然而，在本书协作时，还没有浏览器实现这些选择符。
+为此，我们这里只看一个选择符，因为它们未来都有可能变。
+
+Relational 伪类选择符来自最新草案的 “Logical Combinations” 一节 (http://dev.w3.orhg/csswg/selectors-4/)
+
+### :has 伪类
+
+这个伪类的格式如下:
+
+```
+a:has(figcaption) {
+    padding: 1rem;
+}
+```
+
+这条规则可以给一个包含 figcaption 的 a 标签添加内边距。
+组合使用“取反”，可以反转选择范围:
+
+```
+a:not(:has(figcaption)) {
+    padding: 1rem;
+}
+```
+
+这样，只有不包含 figcaption 的 a 标签才会添加这个内边距。
+
+我承认，这个新规范中有很多新选择符都非常好。
+只是什么时候才能在浏览器里安心地使用它们还是个未知数。
+
+### 相对视口的长度
+
+不谈未来了。
+
+之前我们讨论了怎么在响应式网页中选择元素，但没有提到如何设定它们的大小。
+
+CSS Values and Units Level 3 (http://www.w3.org/TR/css3-values/) 引入了相对视口的长度单位。
+
+这些单位对响应式设计非常重要，每种单位都是视口的某种形式的百分比。
+
+- vw: 视口宽度。
+
+- vh: 视口高度。
+
+- vmin: 视口中的最小值，等于vw或vh中较小的值。
+
+- vmax: 视口中的最大值，等于vm或vh中较大的值。
+
+浏览器对这几个单位的支持也不错，参见[caniuse](http://caniuse.com/)。
+
+想要一个高度为浏览器窗口高度 90% 的模态弹层？很简单：
+
+```
+.modal {
+    height: 90vh;
+}
+```
+
+相对视口的单位虽然有用，但有些浏览器的实现却很奇怪。
+比如，iOS 8中的Safari 在向下滚动页面时（地址栏会收缩），不会改变视口的高度。
+
+在设定字体字号时结合使用这些相对单位很不错，可以让蚊子随着视口的大小变化而缩放。
+
+虽然现在就可以拿出一个例子，不过我还想给大家展示一种不同的字体。
+不管你在Mac还是Linux机器上看，这种字体都一样。
+
+好吧，不吹牛了，我要说的其实就是CSS3中的Web字体。
+
+## Web 排版
+
+多年来，Web字体 选择一直被局限在几款“安全” 字体上。
+在遇到必须严格还原的设计时，不得不做成图片放上去，然后再通过文本缩进把文字隐藏到视口之外。
+
+嗯，还不错。
+
+后来也出现了几种在网页中呈现不同版式的方案，比如[sIFR](http://www.mikeindustries.com/blog/sifr/)，还有[Cufon](http://cufon.shoqolate.com/generate/)，它们分别使用Flash 和 JavaScript 重新创建了文本元素，并将它们以必要的字体显示出来。
+
+CSS3 为此推出了Web字体，现在是见证奇迹的时刻了。
+
+### @font-face
+
+@font-face 规则在CSS2中就有了（后来在CSS2.1消失了）。
+IE4 当时部分支持 @font-face 规则（是的，是真的！）。
+
+那既然我们讨论CSS3，跟它又有什么关系呢？
+
+好吧，在CSS3 Font模块中(http://www.w3.org/TR/css3-fonts)，@font-face又回来了。
+在网页中使用字体一直是个难题，直到最近几年Web排版才又重新被人重视起来。
+
+Web上的所有资源都没有唯一的格式，比如图片就有JPEG、PNG和GIF，以及其他格式。
+字体当然也有很多格式。比如IE偏爱的Embedded OpenType(.eot)，TrueType(.ttf)，还有SVG格式和Web Open Font Format(.woff/.woff2)。
+
+目前，必须给一种字体提供多种格式的版本才能获得多浏览器兼容性。
+
+好在针对每种浏览爱情添加自定义字体格式很简单。
+
+下面就来看一看吧。
+
+### 通过 @font-face 实现 Web 字体
+
+CSS提供了 @font-face 规则，用于引用在线字体显示文本。
+
+目前已经有很多查看和获得Web字体的资源，有的免费，有的需要付费。
+我个人比较喜欢 Font Squirred (http://www.fontsquirrel.com/)，当然谷歌也没有免费的Web字体，可以用 @font-face 规则来使用 (http://www.google.com/webfonts)。
+
+此外，也有不错的付费资源，像 Typekit (http://www.typekit.com) 和 Font Deck (http://fontdeck.com)。
+
+作为联系，我们打算下载Roboto。
+这种字体在后期的安卓终端中很常见，是一种很适合小屏幕显示的界面字体。
+
+可以在这里一睹[她的芳容](https://www.fontsquirrel.com/fonts/roboto)。
+
+```
+如果能下载到某个字体的针对某种语言的“子集”，那就只下载那一部分。这样的文件会比较包含全部内容的文件小。
+```
+
+下载了 @font-face包之后，打开ZIP文件就可以看到 Roboto 字体中包含的文件夹，，对应不同的版本。
+
+这里选择Roboto Regular 版， 在相应的文件夹中有多种文件格式（WOFF、TIF、EOT和SVG），还有一个包含所有字体的stylesheet.css 文件。
+
+例如，Roboto Regular 版本对应的规则如下：
+
+```
+@font-face {
+    font-family: 'robotoregular';
+    src: url('Roboto-Regular-webfont.eot');
+    src: url('Roboto-Regular-webfont.eot?#iefix') format('embeddedopentype'),
+         url('Roboto-Regular-webfont.woff') format('woff'),
+         url('Roboto-Regular-webfont.ttf') format('truetype'),
+         url('Roboto-Regular-webfont.svg#robotoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+```
+
+与提供商前缀的机制很类似，浏览器也会一次尝试属性列表中的样式，忽略不能识别的内容（属性值越靠下，优先级越高）。
+
+这样，无论什么浏览器，总有一款适合它。
+
+好，虽然这段代码可以直接复制黏贴，但黏贴之后别忘了修改路径。
+**一般我会把解压文件放到与css文件夹同级的fonts文件夹中。**
+因此复制黏贴后，需要把路径修改成这样：
+
+```
+@font-face {
+    font-family: 'robotoregular';
+    src: url('../fonts/Roboto-Regular-webfont.eot');
+    src: url('../fonts/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Regular-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Regular-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Regular-webfont.svg#robotoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+```
+
+然后再要设置正确的字体和粗细就行了。
+
+```
+body {
+    font-family: robotoregular;
+}
+```
+
+使用Web字体还有一个好处。
+如果设计图中使用了与你代码中相同的字体，可以直接使用设计图中的字体大小。
+
+比如，PhotoShop中的字号是24像素，那你可以直接用这个值，或者将它转换成相对大小，比如rem（假设根元素的 font-size 为 16像素，那 24/16 = 1.5rem）。
+
+不过，前面说了，我们现在使用相对视口的单位了。
+可以相对视口大小设置不同的文本大小：
+
+```
+body {
+    font-family: robotoregular;
+    font-size: 2.1vw;
+}
+
+
+@media (min-width: 45rem) {
+    html,
+    body {
+        max-width：50.75rem;
+        font-size: 1.8vw;
+    }
+}
+
+@media (min-width: 55rem) {
+    html,
+    body {
+        max-width: 78.75rem;
+        font-size: 1.7vw;
+    }
+}
+```
+
+如果站在浏览器中打开这个例子并缩放视口，可以看到仅仅几行CSS就把文本变得可缩放了。
+
+### 注意事项
+
+总体来说，使用@font-face引入Web字体是非常好的。
+**响应式设计中，使用@font-face 唯一一个需要注意的问题就是文件大小。**
+
+比如我们前面的例子，如果设备渲染需要SVG格式的Roboto Regular，那相对于使用标准的Web安全字体(Airal)，就需要多下载34 KB文件。
+
+我们的例子中使用了英文字体的子集以缩小文件，但并非任何时候都可以这样做。
+
+**如果你很在意网站的性能，就需要关注一下自定义字体的引用文件的大小。**
+
+## CSS3的新颜色格式及透明度
+
+本章到现在一直讲CSS3提供的选择页面元素的选择符，以及使用Web字体。
+接下来应该看一看 CSS3 新增了哪些颜色相关的特性了。
+
+首先，CSS3 新增了两种声明颜色的格式： RGB 和 HSL。
+此外，这两种颜色模式还支持alpha通道 (RGBA 和 HSLA)。
+
+### RGB
+
+RGB (Red Green Blue, 红绿蓝)是一种沿用了几十年的颜色系统，原理是分别定义红、绿、蓝三原色分量的值。
+
+比如，在CSS中 十六进制的红色 是 #fe0208：
+
+```
+.redness {
+    color: #fe0208;
+}
+```
+
+关于如何直观地理解十六进制颜色值，推荐大家看看Smashing Magazine上的[这篇文章](http://www.smashingmagazine.com/2012/10/04/the-code-side-of-color/)。
+
+而在CSS3中，可以这样定义同样的RGB值：
+
+```
+.redness {
+    color: rgb(254, 2, 8);
+}
+```
+
+大多数图片编辑软件都能显示颜色的十六进制值和RGB值。
+
+比如PhotoShop的取色器里就有的R、G、B框，显示每个通道的分量值。
+
+把它们直接对应到CSS的RGB值里就可以， 语法是把它们放到一对括号中，按红、绿、蓝的顺序，前面加上rgb字样。
+
+
+### HSL
+
+除了RGB，CSS3还支持HSL（Hue Saturation Lightness，色相、饱和度、亮度）颜色系统。
+
+HSL与HSB不同
+
+HSL相对来说更好理解一些。
+比如，除非你对色值真的很精通，否则很难说rgb(255, 51, 204)是什么颜色？
+有不服的吗？没有，我也说不出来。
+可是，给我一个HSL值，比如hsl(315, 100%, 60%)，我能大概才出来这是一种介于洋红和红之间的颜色。
+
+我是怎么知道的？很简单。
+
+HSL有一个360度的色轮，这样的：
+
+HSL值中的第一个设置Hue，即色相。
+在上面的色轮中，黄色在60度，绿色在120度，青在180度，蓝在240度，洋红在300度，红在360度。
+而前面的HSL色的色相值是315，根据这个色轮，很容易知道它介于洋红 (300) 和 红 (360) 之间。
+
+
+后面两个值分别定义饱和度和亮度，以百分比形式给出。
+它们只会修改基本的色相。
+更饱和的是指色彩更浓烈，百分比相对更大。
+亮度也一样，如果值为100%，那就是白色了。
+
+在定义了一种HSL颜色后，很容易派生出多个相近的颜色，只要修改饱和度和亮度的百分比就行了。
+比如，前面定义的颜色可以改成这样：
+
+```
+.redness {
+    color: hsl(359, 99%, 50%);
+}
+```
+
+如果想让它的颜色暗一些，可以只修改亮度的百分比:
+
+```
+.darker-red {
+    color: hsl(359, 99%, 40%);
+}
+```
+
+总之，只要记住色轮中不同角度对应的颜色，就能大概估计出HSL颜色。
+然后不用借助颜色选择器，同样可以再定义出相近颜色的变体来。
+
+### alpha 通道
+
+有人可能会问，为什么放着用了那么多年的可靠的十六进制颜色值不用，突然要使用HSL或RGB颜色值呢？
+
+HSL 或 RGB 与 十六进制值的区别在于，它们支持透明通道，可以让原来被元素挡住的东西 透过来。
+
+HSLA 声明与标准的HSL 声明类似，只是必须声明值为 hsla，同时再多指定一个不透明度值，取值范围为0到1。
+
+比如：
+
+```
+.redness-alpha {
+    color: hsla(359, 99%, 50%, 0.5);
+}
+```
+
+RBGA 语法的规则与 HSLA 相同：
+
+```
+.redness-alpha-rgba {
+    color: rgba(255, 255, 255, 0.8);
+}
+```
+
+**为什么不只使用不透明度？**
+
+CSS3 也支持设置元素的opacity属性，取值范围也是 0 到 1 (.1表示10%)、
+与RBGA 和 HSLA 不同，对元素设置 opacity影响整个元素，而RGBA 和 HSLA 则只影响元素特定的方面，比如背景。
+
+这样就可以实现元素中不透明的文字和透明的背景。
+
+### CSS Color Module Level 4的颜色操作
+
+虽然这个规范还在早起阶段，但在CSS中享受 color() 函数的日子应该不远了。
+
+在浏览器广泛支持以前，这种事最好通过CSS预/后处理来做（让自己提高一下，买本相关图书看看。我推荐Ben Frain的《Sass 和 Compass 设计师指南》）。
+
+关于CSS Color Module Level 4的进度，可以查看这个[链接](http://dev.w3.org/csswg/css-color-4/)。
+
+## 小结
+
+本章，我们学习了使用CSS3 的新选择符选择几乎页面中的任何元素。
+同时，还学习了如何实现响应式的列和滚动面板，以及解决长URL折行等麻烦的问题。
+而且，我们也理解了CSS3 新的颜色模块和如何使用RGB及HSL，并通过它们设置透明度，实现美妙的效果。
+
+另外，这一章还介绍了使用 @font-face 规则引入 Web 字体，让我们不再被所谓的Web安全字体束缚。
+这些内容不少把？但这些还只是CSS3这个宝库的冰山一角。
+接下来，我们会继续探索CSS3给响应式设计带来的便利性，看看怎么利用它让我们的页面加载更快、开发更便捷、维护更轻松，比如文本阴影、盒阴影、渐变和多重背景。
