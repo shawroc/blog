@@ -550,7 +550,6 @@ https://www.udacity.com/course/browser-rendering-optimization--ud860
 
 例如，在写本书的三年前，响应式图片就不存在。
 想当年，我们只能使用第三方的解决方法来为不同的视口提供适合的图片。
-既然现在这一普遍的需求被W3C规范化了，我们就可以放心地使用了。
 
 同样，不久前，Flexbox只是在规范作者眼前一闪而过而已。
 哪怕当其被写入规范，它仍然十分难用。直到Andrey Sitnik和他在Evil Martians上的聪明的合作人写出了Autoprefixer，我们才能相对轻松地跨浏览器使用它。
@@ -560,7 +559,10 @@ https://www.udacity.com/course/browser-rendering-optimization--ud860
 它就是一个创建离线Web应用的更好的方法。
 
 还有"Web组件"，它是一个规范集合，包括了影子DOM、自定义元素和HTML的引入方法。这些让我们得以创建完全定制的、可复用的组件。
-
+]';lkjhnlkjgvxz,.,jgfz  ZSf'\
+];jgtu9
+ZXnb
+-[0uytre]
 然后还有其他接下来会被改进的地方，例如CSS4的选择器和CSS4的媒体查询。
 
 最后，另一个隐约可见的重要改变就是HTTP2了。
