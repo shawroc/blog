@@ -104,3 +104,5 @@ let b = {z:3};
 let ab = {...a, ...b};
 
 console.log(ab); //{x:1, y:2, z:3}
+```
+
