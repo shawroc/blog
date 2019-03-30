@@ -33,16 +33,46 @@
       clear: both;
     }
     .nav>li {
-      float: left;
+      background-color: grey;
+      color: #fff;
     }
     .nav {
       display: none;
     }
     .nav.active {
-      display: block;
+      display: flex;
+      justify-content: space-between;
+
     }
     header > button {
-     
+      position: absolute;
+      right: 20px;
+      top: 26px;
+    }
+    .nav2 {
+      display: none;
+    }
+    @media (min-width: 451px) {
+      header > button {
+        display: none;
+      }
+      .nav.active {
+        display: none;
+      }
+      .nav2 {
+        display: block;
+      }
+      header {
+        display: flex;
+        align-items: center;
+      }
+      header .nav2 {
+        display: flex;
+        margin-left: 20px;
+      }
+      header .nav2>li {
+        margin: 0 10px;
+      }
     }
 
   </style>
@@ -51,7 +81,14 @@
   <header>
     <div class="logo"></div>
     <button id="xxx">菜单</button>
-    <ul id="yy" class="nav clearfix">
+    <ul id="yy" class="nav">
+      <li><a href="#">导航1</a></li>
+      <li><a href="#">导航2</a></li>
+      <li><a href="#">导航3</a></li>
+      <li><a href="#">导航4</a></li>
+      <li><a href="#">导航5</a></li>
+    </ul>
+    <ul class="nav2">
       <li><a href="#">导航1</a></li>
       <li><a href="#">导航2</a></li>
       <li><a href="#">导航3</a></li>
