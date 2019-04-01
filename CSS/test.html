@@ -4,18 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>移动页面demo</title>
+  <title>flex 绝对居中</title>
   <style>
+    .parent {
+      height: 400px;
+      background: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .child {
+      border: 1px solid black;
+    }
   </style>
 </head>
 <body>
-  <!-- 
-    伪代码，各个客户端网页切换原理
-    if userAgent.test(/iphone/i)
-      跳转到其他页面
-      redirect_to http://m.taobao.com
-    else 
-      render 'pc_index.html'
-  -->
+  <div class="parent">
+    <div class="child">
+      快要吃完饭啦！快要吃完饭啦！快要吃完饭啦！快要吃完饭啦！快要吃完饭啦！快要吃完饭啦！<br>
+      快要吃完饭啦！<br>
+      快要吃完饭啦！<br>
+      快要吃完饭啦！<br>
+      快要吃完饭啦！<br>
+      快要吃完饭啦！<br>
+    </div>
+  </div>
 </body>
 </html>
