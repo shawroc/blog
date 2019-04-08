@@ -7,8 +7,8 @@
   <title>媒体查询的运用</title>
   <script>
     var pageWidth = window.innerWidth;
-    console.log(pageWidth)
-    document.write('<style>html{font-size:'+ pageWidth+ 'px;}</style>')
+    console.log(pageWidth);
+    document.write('<style>html{font-size:'+ pageWidth/10 + 'px;}</style>')
   </script>
   <style>
     * {
@@ -20,10 +20,11 @@
       background: #ddd;
     }
     .child {
-      width: 0.4rem;
-      height: 0.4rem;
-      margin: 0.04rem;
+      width: 4rem;
+      height: 4rem;
+      margin: 0.5rem 0.5rem;
       float: left;
+      border: 1px solid red;
     }
     .clearfix::after {
       content: '';
@@ -31,7 +32,7 @@
       clear: both;
     }
     body {
-      font-size: 0.02rem;
+      font-size: 16px;
     }
   </style>
 </head>

@@ -13,6 +13,8 @@
 i. 所有手机显示的界面都是一样的，只是大小不同
 ii. 1 rem == html font-size == viewport width
 
+记住font-size不能小于12px
+
 4. 使用 JS 动态调整 REM
 
 http://js.jirengu.com/xoqadocuqu/2/edit?html,css,output
@@ -70,6 +72,9 @@ $designWidth : 640; // 640 是设计稿的宽度，你要根据设计稿的宽�
 ```
 
 即可实现 px 自动变 rem
+
+在 github 上读取 node-sass 的官方文档
+
 
 
 ## 为什么你学不好 LESS/SASS/Webpack
