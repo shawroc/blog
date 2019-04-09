@@ -1,47 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>媒体查询的运用</title>
-  <script>
-    var pageWidth = window.innerWidth;
-    console.log(pageWidth);
-    document.write('<style>html{font-size:'+ pageWidth/10 + 'px;}</style>')
-  </script>
+  <title>Document</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    .child {
-      background: #ddd;
-    }
-    .child {
-      width: 4rem;
-      height: 4rem;
-      margin: 0.5rem 0.5rem;
-      float: left;
+    span {
+     
       border: 1px solid red;
     }
-    .clearfix::after {
-      content: '';
-      display: block;
-      clear: both;
+    span:nth-child(1) {
+      line-height: 100px;
     }
-    body {
-      font-size: 16px;
+    span:nth-child(2) {
+      line-height: 100px;
+    }
+    span:nth-child(3) {
+      line-height: 100px;
     }
   </style>
 </head>
 <body>
-  <div class="parent clearfix">
-    <div class="child">child1</div>
-    <div class="child">child2</div>
-    <div class="child">child3</div>
-    <div class="child">child4</div>
-  </div>
+  <p>
+    <span>你A</span><span>你B</span><span>你C</span>
+  </p>
 </body>
 </html>
