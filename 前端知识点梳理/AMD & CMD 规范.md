@@ -1,4 +1,4 @@
-# AMD & CMD & RequireJS
+# AMD & CMD 
 
 ## 模块化的价值
 
@@ -176,4 +176,148 @@ nameModule.printName();
 
 解决思路之一是，开发一个服务器端组件，对模块代码作静态分析，将模块与它的依赖列表一起返回给浏览器。这很好使，但需要服务器安装额外的组件，并因此要调整一系列底层架构。
 
-另一种解决思路是，用一套标准模板来feng·
+另一种解决思路是，用一套标准模板来封装模块定义，但是对于模块应该怎么定义和怎么加载，又产生了分歧：
+
+### AMD
+
+AMD 即 Asynchronous Module Definition，中文名是异步模块定义的意思。
+它是一个在浏览器端模块化开发的规范。
+
+由于不是 JavaScript 原生支持，使用 AMD 规范进行页面开发需要用到对应的库函数，也就是大名鼎鼎的 RequireJS，实际上 AMD 是 RequireJS 在推广过程中对模块定义的规范化的产出。
+
+requireJS 主要解决两个问题
+
+1. 多个 js 文件可能有依赖关系，被依赖的文件需要早于依赖它的文件加载到浏览器。
+
+2. js 加载的时候浏览器会停止页面渲染，加载文件越多，页面失去响应时间越长看一个使用 requireJS 的例子。
+
+```js
+
+// 定义模块 myModule.js
+
+define(['dependency'], function(){
+  var name = 'Byron';
+  function printName(){
+    console.log(name);
+  }
+  
+  return  {
+    printName: printName
+  };
+});
+
+// 加载模块
+require(['myModule'], function(my){
+  my.printName();
+});
+```
+
+#### requireJS 语法 
+
+requireJS 定义了一个函数 define， 它是全局变量，用来定义模块。
+
+```js
+
+define(id?, dependencies?, factory);
+
+```
+
+1. id：可选参数，用来定义模块的标识，如果没有提供该函数，脚本文件名（去掉拓展名）。
+
+2. dependencies：是一个当前模块依赖的模块名称数组。
+
+3. factory：工厂方法，模块初始化要执行的函数或对象。如果为函数，它应该只被执行一次。如果是对象，此对象应该为模块的输出值。
+
+在页面上使用 require 函数加载模块
+
+```js
+
+require([dependencies], function(){});
+
+```
+
+require() 函数接受两个参数
+
+1. 第一个参数是一个数组，表示所依赖的模块。
+2. 第二个参数是一个回调函数，当前面指定的模块都加载成功后，它将被调用。加载的模块会以参数形式传入该函数，从而在回调函数内部就可以使用这些模块。
+
+require() 函数在加载依赖的函数的时候是异步加载的，这样浏览器不会失去响应，它指定的回调函数，只有前面的模块都加载成功后，才会运行，解决了依赖性的问题。
+
+### CMD 
+
+CMD 即 Common Module Definition 通用模块定义，CMD 规范是国内发展出来的，就像 AMD 有个 requireJS，CMD 有个浏览器的实现 SeaJS，SeaJS 要解决的问题和 requireJS 一样，只不过在模块定义方式和模块加载 （可以说运行、解析）时机上有所不同。
+
+#### 语法
+
+Sea.js 推崇一个模块一个文件，遵循统一的写法
+
+##### define
+
+```js
+
+define(id?, deps?, factory);
+
+```
+
+因为 CMD 推崇
+
+1. 一个文件一个模块，所以经常就用文件名作为模块 id。
+2. CMD 推崇依赖就近，所以一般不在 define 的参数中写依赖，在 factory 中写。
+
+factory 有三个参数
+
+```js
+function(require, exports, module)
+```
+
+##### require
+
+require 是 factory 函数的第一个参数。
+
+```js
+require(id)
+```
+
+require 是一个方法， 接受 模块标识 作为唯一参数，用来获取其他模块提供的接口。
+
+##### exports
+
+exports 是一个对象，用来向外提供模块接口。
+
+##### module
+
+module 是一个对象，上面存储了与当前模块相关联的一些属性和方法。
+
+##### demo
+
+```js
+// 定义模块 myModule.js
+
+define(function(require, exports, module) {
+  var $ = require('jquery.js');
+  $('div').addClass('active');
+});
+
+// 加载模块
+seajs.use(['myModule.js'], function(my) {
+
+});
+
+```
+
+## AMD 与 CMD 区别
+
+最明显的区别就是在模块定义时对依赖的处理不同。
+
+1. AMD 推崇依赖前置，在定义模块的时候就要声明其依赖的模块。
+2. CMD 推崇就近依赖，只有在用到某个模块的时候再去 require。
+
+这种区别各有优劣，只是语法上的差距，而且 requireJS 和 SeaJS 都支持对方的写法。
+
+AMD 和 CMD 最大的区别 是对依赖模块的执行时机处理不同，注意不是加载的时机或者方式不同。
+
+同样都是异步加载模块，AMD 在加载模块完成后就会执行该模块，所有模块都加载执行完后会进入 require 的回调函数，执行主逻辑，这样的效果就是依赖模块的执行顺序和书写不一定一致，看网络速度，哪个先下载下来，哪个先执行，但是主逻辑一定在所有依赖加载完成后才执行。
+
+CMD 加载完某个依赖模块后并不执行，只是下载而已，在所有依赖模块加载完成后进入主逻辑，遇到 require 语句的时候才执行对应的模块，这样模块的执行顺序和书写顺序是完全一致的。
+
+这也是很多人说 AMD 用户体验好，因为没有延迟，依赖模块提前执行了，CMD 性能好，因为只有用户需要的时候才执行的原因。
