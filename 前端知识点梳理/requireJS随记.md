@@ -90,5 +90,48 @@ requirejs(['jquery','canvas', 'app/sub'],function($, canvas, sub) {
 ```
 
 
-r.js
+## r.js 打包
 
+npm install -g requirejs
+r.js -o app.build.js
+
+```js
+// r.js
+requirejs.config({
+  base: './src/js',
+  paths: {
+    'jquery': 'lib/bower_components/jquery/dist/jquery.min'
+  }
+});
+
+requirejs(['app/index]');
+
+
+// main.js
+requirejs.config({
+  base: "./src/js",
+  paths: {
+    'jquery': 'lib/bower_components/jquery/dist/jquery.min'
+  }
+});
+// 加载入口模块
+
+
+
+// build.js
+({
+  // 跟踪要压缩的文件所在的文件夹 ./src/js 所在的文件夹
+  baseUrl: './src/js',
+  // 一些文件别名
+  paths: {
+    'jquery': 'lib/bower_components/jquery/dist/jquery.min,
+  },
+  // 追踪依赖 main
+  name: 'main',
+  // build.js 所在的文件夹 作为依据 追踪路径
+  out: 'dist/js/merge.js'
+});
+
+// node r.js -o build.js
+// node r.js -o build.js optimize=none
+```
