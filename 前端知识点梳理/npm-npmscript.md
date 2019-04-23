@@ -18,7 +18,11 @@ npm 官方文档: https://npmjs.org/doc/README.html
 ```js
 
 // demo
-// a.js - function sayHello(name){console.log('hello' + name)}, exports.sayHello = sayHello
+// a.js
+// function sayHello(name){
+//  console.log('hello' + name)
+// }
+// exports.sayHello = sayHello
 // -index.js
 var a = 1;
 console.log(a);
@@ -79,7 +83,7 @@ bench:
   "bin":{
     "hungerdemo": "./index.js"
   },
-  "scripts: {
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -155,8 +159,211 @@ cd 到对应的目录
 // 命名之前，要确定这个和 npm 服务器上的所有包都不重名
 // 最好先搜索一下
 
-
+``` md
 name: (demo0) hunger-demo0
+version: (1.0.0)
+description：这是我的demo
+entry point: (index.js)
+test command: 
+git repository: 
+keywords: shawroc
+author: shawroc
+liscense: (ISC)
+```
+
+2. 新建一个 READEME.md
+
+
+touch README.md
+
+``` md
+# 测试
+这里是 shawroc 的课堂
+```
+
+3. 新建一个 index.js
+
+``` js
+var marked = require('marked')
+
+var str = marked('# hello world')
+
+module.exports = str
+
+```
+
+### npm install --save marked
+
+npm install --save 就是把我们的下载信息自动添加到 package.json 的 dependencies 里面。
+
+package.json 就相当于一个种子一样，这个种子文件很小。
+但是当我需要这些材料的时候，我点个下载 npm install --save xxxx,
+就会把这些材料下载下来。
+
+``` md
+// .gitignore
+node_modules 就是不传他， 但是如果你的代码里没有这个模块，你的代码不就报错了吗？
+
+```
+
+``` json
+{
+  "name": "demo0",
+  "version": "1.0.0",
+  "description": "This is Shaw's Demo",
+  "main": "index.js",
+  "srcript": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "keywords": {
+    "shawroc"
+  },
+  "author": "shawroc",
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^0.3.6"
+  }
+}
+
+```
+
+### npm install --save-dev
+
+npm install --save-dev 就是 自己在做开发，测试的时候依赖的，分享给别人用不到，所以是别人下载不下来的。
 
 
 
+``` json
+
+{
+  "name": "hunger-demo0",
+  "version": "1.0.0",
+  "description": "this is my demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "keywords": {
+    "shawroc"
+  },
+  "author": "ruoyu",
+  "license": "ISC"m
+  "dependencies": {
+    "marked": "^0.3.6"
+  },
+  "devDependencies": {
+    "easytpl": "^1.0.4"
+  }
+}
+
+```
+
+
+### 简单的命令行工具
+
+demo3
+|- pacakge.json
+|- index.js
+
+``` js
+// index.js
+#!/usr/bin/env node
+console.log('hello');
+```
+
+``` json
+// pacakge.json
+// bin 就是 二进制命令行
+{
+  "name": "demo3",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "hungerdemo": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "author": "",
+  "license": "ISC"
+}
+
+{
+  "name": "demo3",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "demo3": "./index.js",
+    "demo4": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "author": "",
+  "license": "ISC"
+}
+
+```
+
+npm installl -g 
+凡是安装在全局的node_modules 都是放在
+/usr/local/lib/node_modules/ 这个文件夹下
+
+
+## 天气预报- node 小应用
+
+代码结构
+- weather
+  |- index.js
+  |- package.json
+
+``` json
+// package.json
+{
+  "name": "weather",
+  "version": "1.0.2",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "weather": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" "
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.15.3"
+  }
+}
+```
+
+``` js
+// index.js
+#!/usr/bin/env node
+
+var axios = require('axios');
+console.log(process.argv);
+
+var data = {}
+
+if(process.argv[2]){
+  data.params = {
+    city: proccess.argv[2]
+  }
+}
+
+axios.get('http://api.jirengu.com/weather.php', data)
+  .then(function(response){
+    var weatherInfo = response.data.results[0].weather_data[0]
+    console.log(weahterInfo.date)
+    console.log(weatherInfo.temperature)
+    console.log(weatherInfo.weather + ',' + weatherInfo.wind)
+    console.log('PM25:' + weatherInfo.data.results[0].pm25)
+  })
+  .catch(function(error){
+    console.log(error)
+  })
+```
