@@ -125,15 +125,18 @@ npm set --registry https://registry.npm.taobao.org
 // npm install --save-dev gulp-concat
 var gulp = require('gulp');
 
+// css 压缩
+// concat 合并
 var cssnano = require('gulp-cssnano');
 var concat = require('gulp-concat');
 
 //gulp.src |  gulp.dest | gulp.task | gulp.watch
 
+// 合并 压缩 输出到指定目录
 gulp.task('default', function(){
   gulp.src('./src/css/*.css')
     .pipe(concat('index-merge.css'))
-    .pipe(cssano())
+    .pipe(cssnano())
     .pipe(gulp.dest('dist/css/'));
 });
 
@@ -155,3 +158,107 @@ gulp.task()
 
 gulp.watch('js/**/*.js')
 ```
+
+
+## gulp 实践
+
+``` js
+// gulpfile.js
+var gulp = require('gulp');
+
+var cssnano = require('gulp-cssnano');
+var concat = require('gulp-concat');
+
+// gulp.src | gulp.dest | gulp.task | gulp.watch
+
+gulp.task('css', function(){
+  gulp.src('./src/css/*.css')
+    .pipe(concat('index-merge.css'))
+    .pipe(cssnano())
+    .pipe(gulp.dest('dist/css/'));
+});
+
+// npm install --save-dev gulp-cssnano
+// npm install --save-dev gulp-concat
+
+// 用 中括号语法 在 default 引用创建的 ['css']
+gulp.task('default', ['css'])
+
+```
+
+第二个例子
+
+``` js
+var gulp = require('gulp');
+
+var minifycss = require('gulp-minify-css'), // css 压缩
+uglify = require('gulp-uglify'), // js压缩
+concat = require('gulp-concat'), // 合并文件
+rename = require('gulp-rename'), // 重命名
+clean = require('gulp-clean'), // 清空文件夹
+minhtml = require('gulp-htmlmin'), // html 压缩
+jshint = require('gulp-jshint'), // js代码规范性检查
+imagemin = require('gulp-imagemin'); // 图片压缩
+
+gulp.task('html', function(){
+  return gulp.src('src/*.html')
+    .pipe(minhtml({collapseWhitespace: true}))
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('css', function(argument){
+  gulp.src('src/css/*.css')/
+    .pipe(concat('merge.min.css'))
+    .pipe(minifycss())
+    .pipe(gulp.dest('dist/css/'));
+});
+
+gulp.task('js', function(argument){
+  gulp.src('src/js/*.js')
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(concat('merge.js'))
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/js/'));
+});
+
+gulp.task('img', function(argument){
+  gulp.src('src/imgs/*)
+    .pipe(imagemin())
+    .pipe(gulp.dest('dist/img'));
+});
+
+gulp.task('clean', function(){
+  gulp.src('dist/*', {read: false})
+    .pipe(clean());
+});
+
+gulp.task('build', ['html', 'css', 'js', 'img']);
+```
+
+第三个例子
+
+``` js
+var gulp = require('gulp');
+
+// 引入组件
+var browserSync = require('browser-sync').create();
+var fs = require('fs');
+
+gulp.task('reload', function(){
+  browserSync.reload();
+});
+
+gulp.task('server', function(){
+  browserSync.init({
+    server: {
+      baseDir: './src'
+    }
+  });
+  gulp.watch(['**/*.css', '**/*.js', '**/*.html'], ['reload'])
+});
+```
+
