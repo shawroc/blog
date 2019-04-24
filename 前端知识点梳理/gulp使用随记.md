@@ -262,3 +262,127 @@ gulp.task('server', function(){
 });
 ```
 
+第四个例子
+
+文件路径
+
+vip_recruit
+  |- dist
+    |- css
+    |- imgs
+    |- js
+    |- index.html
+  |- node_modules
+  |- src
+    |- css
+    |- imgs
+    |- js
+    |- less
+    |- gulpfile.js
+    |- package.json
+  |- package.json
+  |- readme.md
+
+``` js
+
+var gulp = require('gulp');
+var rev = require('gulp-rev'); // 添加版本号
+var revReplace = require('gulp-rev-replace'); // 版本号替换
+var useref = require('gulp-useref'); // 解析html资源定位
+var gulpif = require('gulp-if');
+var filter = require('gulp-filter');
+var uglify = require('gulp-uglify'); // js 压缩优化
+var csso = require('gulp-csso'); // css 优化压缩
+var clean = require('gulp-clean'); // 文件夹的清空
+var imagemin = require('gulp-imagemin'); // 图片的压缩优化
+var concat = require('gulp-concat'); // concat 就是文件的合并
+var less = require('gulp-less'); // less 就是预编译，把less 文件转换为css
+var autoprefixer = require('gulp-autoprefixer'); // 后编译， 自动加 浏览器前缀
+var connect = require('gulp-connect');
+
+gulp.task("dist:img", () => 
+  gulp.src('src/imgs/*')
+  .pipe(imagemin())
+  .pipe(gulp.dest('dist/imgs'))
+);
+
+gulp.task("dist:css", function() {
+  gulp.src("dist/css/*").pipe(clean());
+  return gulp.src('src/**/*.less)
+        .pipe(less()) // 把 less 处理成 css
+        .pipe(csso()) // 优化 css
+        .pipe(concat('merge.css')) // 合并 css
+        .pipe(autoprefixer({
+          browsers: ['last 2 versions'],
+          cascade: false
+        })) // 自动添加前缀
+        .pipe(gulp.dest('dist/css'))
+});
+
+gulp.task("src:css", function(){
+  gulp.src('src/css/*').pipe(clean());
+  return gulp.src('src/less/*.less')
+        .pipe(less())
+        .pipe(autoprefixer({
+          browsers: ['last 2 versions'],
+          cascade: false
+        }))
+        .pipe(gulp.dest('src/css'))
+});
+
+gulp.task("dist:js", function(){
+  gulp.src('dist/js/*').pipe(clean());
+  return gulp.src('src/**/*.js')
+      .pipe(uglify())
+      .pipe(concat('merge.js'))
+      .pipe(gulp.dest('dist/js'))
+});
+
+gulp.task("revision", ['dist:css','dist:js'], function(){
+  return gulp.src("dist/**/*.css", "dist/**/*.js")
+        .pipe(rev())
+        .pipe(gulp.dest('dist'))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('dist'))
+});
+
+// {
+//  "css/merge.css": "css/merge-397cc061be.css"
+//  "js/merge.js" : "js/merge-ca613688fc.js"
+// }
+
+
+gulp.task("index", ["revision"], function() {
+  // 得到映射 关系
+  var manifest = gulp.src("./dist/rev-manifest.json");
+  return gulp.src("src/index.html")
+        .pipe(revReplace({
+          manifest: manifest
+        }))
+        .pipe(useref())
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task("watch", function(){
+  gulp.watch('src/**/*.less', ['src:css'])
+});
+
+gulp.task('connect', function(){
+  connect.server({
+    root: 'src',
+    livereload: true
+  })
+});
+
+gulp.task('reload', function(){
+  gulp.src('src/*.html')
+    .pipe(connect.reload())
+});
+
+gulp.task('change', function(){
+  gulp.watch(['src/**/*'], ['src:css', 'reload']);
+});
+
+gulp.task('server', ['connect', 'change']);
+
+```
