@@ -92,3 +92,136 @@ body {
 </div>
 ```
 
+### line-height
+
+line-height 是用来设置单行文本的行高
+
+- line-height: 2
+- line-height: 100%
+- height = line-height 来垂直居中单行文本
+
+line-height: 2 和 line-height: 200% 有什么区别呢？
+
+
+``` html
+
+<style>
+  /* line-height 是可以继承的 */
+  /* line-height: 2 会根据 每个元素的行内元素字体大小去计算 */
+  /* body {
+    line-height: 2;
+  } */
+
+  /* 如果写百分比的话， */
+  /* 则根据 html 根元素的字体大小，自动计算出值 */
+  /* 而 line-height 是 可继承的 */
+  .body {
+    line-height: 200%;
+  }
+  .box {
+    border: 1px solid red;
+    width: 200px;
+    padding: 10px;
+  }
+  .box p {
+    font-size: 30px;
+  }
+</style>
+
+<body>
+  <div class="box">
+  line-height: 2, line-height: 100%, height = line-height 来垂直居中单行文本
+  <p>hello world hello world</p>
+  </div>
+</body>
+```
+
+### 盒模型
+
+W3C 标准中 padding、border 所占的空间不在 width、height 范围内，大家俗称的 IE 的盒模型 width 包括 content 尺寸 + padding + border
+
+- 标准盒模型， content(height + width) + padding + border + margin
+
+- IE 盒模型， content + padding + border (height +width) + margin
+
+ie678 怪异模式 （不添加 doctype) 使用 ie 盒模型， 宽度 = 边框 + padding + 内容宽度
+
+chrome, ie 9+， ie678（添加 doctype）使用标准盒模型，宽度 = 内容宽度
+
+#### 使用 css3 新样式 box-sizing
+
+1. box-sizing: content-box, w3c 标准盒模型
+2. box-sizing: border-box, "IE 盒模型"
+
+
+### icon 的各种实现方式
+
+目录
+
+1. 需求
+2. image
+3. CSS Sprite
+4. Icon Font
+5. CSS Icon
+6. SVG
+
+#### 使用 image 实现
+
+注意事项
+
+1. img 的大小设置
+2. img 的 vertical-align
+3. 请求数过多
+
+请求是邪恶的吗？
+明明可以发更少的请求，你却发很多请求，这才是邪恶的。
+
+#### CSS Sprites
+
+CSS 精灵图
+
+你还在人肉拼 Sprites 吗？
+
+1. 用命令行：sprity create build resource/*.png -s style.css
+
+sprity create out resourse -s style.css
+
+2. 用在线工具: http://cn.spritegen.website-performance.org
+
+缺点
+
+1. 无法缩放
+2. 不好修改
+
+#### Icon Font
+
+把字体做成图标
+
+1. 制作字体文件
+2. 声明 font-family
+  1. 使用本地链接
+  2. 使用第三方链接
+3. 使用 font-family
+  1. 使用 HTML 实体
+  2. 使用 CSS :before
+
+#### html 实体
+
+html entity
+
+#### CSS icon
+
+用 CSS 画
+
+CSS 能画圆，能画方，为什么不能画 icon？
+
+https://cssicon.space/
+
+#### SVG
+
+1. img src=svg
+2. SVG "sprites"
+
+借助工具。
+
+
