@@ -157,3 +157,38 @@ CSS 有三种基本的定位机制: 普通流，相对定位和绝对定位
 
 - 相对定位比较简单，对应的 position 属性的 relative 值，如果对一个元素进行相对定位，它将出现在他所在的位置上，然后可以通过设置垂直或水平位置，让这个元素相对于它自己移动，在使用相对定位时，无论元素是否移动，元素在文档流中占据原来空间，只是表现出来的位置会改变。
 
+### 绝对定位与固定定位
+
+- 相对定位可以看作特殊的普通流定位，元素位置是相对于它在普通流中位置发生变化，而绝对定位使元素的位置与文档流无关，也不占据文档流空间，普通流中的元素布局就像绝对定位元素不存在一样。
+
+- 绝对定位的元素的位置是相对于距离最近的 非 static 祖先元素 位置决定的。如果元素没有已定位的祖先元素，那么他的位置就相对于初始包含块 html 来定位。
+
+- 因为绝对定位与文档流无关，所以绝对定位的元素可以覆盖页面上的其他元素，可以通过 z-index 属性控制叠放顺序，z-index 越高，元素位置越靠上。
+
+
+``` html
+<div style="border: 5px solid #0e0; width: 200px; position:relative;">
+  <div style="height: 100px; width: 100px; background-color: red;">
+  </div>
+  <div style="height: 100px; width: 100px; background-color: green; position: absolute;">
+  </div>
+  <div style="height: 100px; width: 100px; background-color: yellow;">
+  </div>
+</div>
+```
+
+fixed 固定定位，固定定位是绝对定位的一种，固定定位的元素也不包含在普通文档流中，差异是固定元素的包含块儿是视口（viewport)。
+
+绝对定位 和 BFC
+
+绝对定位能形成 BFC 可用来清除浮动 可用来阻止外边距合并
+
+绝对定位和垂直水平居中
+
+-margin 会使元素在文档流中的位置发生偏移。
+
+## 水平居中 & 垂直居中
+
+### 居中分类
+
+inline 元素居中，text-align: center
