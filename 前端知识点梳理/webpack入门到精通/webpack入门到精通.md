@@ -1,8 +1,10 @@
 # webpack 入门到精通
 
-package.json 就是 项目的清单文件
+## package.json 就是 项目的清单文件
 
 main 在 webpack 中一般称为 主程序入口
+
+scripts 定义的是 自定义命令行
 
 ``` json
 // package.json
@@ -36,6 +38,66 @@ main 在 webpack 中一般称为 主程序入口
 },
 "repository":  {
   "xxx/webpack-tutorial"
+}
+
+```
+
+## webpack.config.js 就是 webpack 的配置文件
+
+``` js
+
+const path = require('path')
+// 必须是绝对路径 哦
+// 配置里面
+module.exports = {
+  entry: "./src/app.js",
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: '_[name].js'
+  }
+}
+
+```
+
+``` js
+
+let base = {
+  index: './index.js',
+  index1: './index1/js
+}
+
+const dynamic-entry = () => base;
+
+module.exports = {
+  entry: dynamic_entry,
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: '_[name].js'
+  }
+}
+
+```
+
+``` js
+let base = {
+  index: './index.js',
+  index1: './index1.js'
+}
+
+// webpack2  提供了多种配置方案
+// const dynamic-entry = () => base;
+
+const dynamic_entry_promise = () => {
+  return new Promise((resolve, reject) => {
+    resolve(base)
+  })
+}
+
+module.exports = {
+  entry: dynamic_entry_promise,
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: '_[name].js'
 }
 
 ```
