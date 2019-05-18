@@ -423,4 +423,97 @@ module.exports = {
 // entry =>  loaders => webpack 内置的逻辑 ==> output
 ```
 
-## 
+## plugins
+
+plugins 顾名思义就是插件
+
+plugins 就是 webpack lifecycle hook
+
+webpack 有三个生命周期
+
+- complitation
+- run
+- done
+
+webpack.ProvidePlugin 的 意思就是 通过引入一个别名，我不需要通过 require 或者 import 形式去引入 模块了。
+
+``` js
+// plugins webpack.config.js
+const path = require('path'),
+  webpack = require('webpack'),
+  CopyWebpackPlugin = require('copy-webpack-plugin'),
+  ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  WebpackNotifierPlugin = require('webpack-notifier');
+
+let base = {
+  index: './index.js',
+  common: './common.js'
+}
+
+module.exports = {
+  devtool: 'source-map',
+  target: "web",
+  entry: base,
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js'
+  },
+  resolve: {
+    alias: {
+      test: path.resolve(__dirname, 'test/test.js')
+    }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery'
+    }),
+    new WebpackNotifierPlugin({
+      title: 'Webpack 编译成功',
+      contentImage: path.resolve(process.cwd(), './img/avatar.jpeg'),
+      ,alwaysNotify: true
+    }),
+    new ExtractTextPlugin({
+      filename: "[name].css",
+      disable: false,
+      allChunks: true
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: Infinity
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /.\js[x]?$/,
+        exclude: /node_mmodules/,
+        use: 'babel-loader'
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        })
+      },
+      {
+        test: /\.less$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        })
+      },
+    ]
+  }
+}
+```
