@@ -1,30 +1,16 @@
-import _ from "lodash";
-import './style.css';
-import MyImage from './my-image.jpg';
-import Data from './data.xml';
-import printMe from './print.js';
-
-function component() {
+async function getComponent() {
   const element = document.createElement('div');
-
-  const btn = document.createElement('button');
-
+  // Lodash, now imported by this script
   element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 
-  element.classList.add('hello');
+  return import(/* webpackChunkName: "lodash" */ 'lodash').then(({ default: _ }) => {
+    const element = document.createElement('div');
 
-  btn.innerHTML = 'Click me and check the console';
-
-  btn.onclick = printMe;
-
-  const myIcon = new Image();
-  myIcon.src = MyImage;
-
-  element.appendChild(myIcon);
-  element.appendChild(btn);
-  console.log(Data);
-
+    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
   return element;
-}
+  }).catch(error => 'An error occurred while loading the component');
+};
 
-document.body.appendChild(component());
+getComponent().then(component => {
+  document.body.appendChild(component);
+})
