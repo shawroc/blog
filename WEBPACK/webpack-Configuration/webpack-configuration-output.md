@@ -364,3 +364,183 @@ When using the ExtractTextWebpackPlugin, use [ contenthash ] to obtain a hash of
 
 ## output.globalObject
 
+string: 'window'
+
+When targeting a library, especially the libraryTarget is 'umd', this option indicates what global object will be used to mount the library.
+
+To make UMD build available on both browsers and Node.js, set output.globalObject option to 'this'.
+
+For example:
+
+webpack.config.js
+
+``` js
+module.exports = {
+  // ...
+  output: {
+    library: 'myLib',
+    libraryTarget: 'umd',
+    filename: 'myLib.js',
+    globalObject: 'this'
+  }
+};
+```
+
+## output.hashDigest
+
+The encoding to use when generating the hash, defaults to 'hex'.
+All encodings from Node.js'hash.digest are supported. USING 'base64' for filenames might be problematic since it has the character / in its alphabet. Likewise 'latin1' could contain any character.
+
+## output.hashDigestLength
+
+The prefix length of the hash digest to use, defaults to 20.
+
+## output.hashFunction
+
+string | function 
+
+The hashing algorithm to use, defaults to 'md4'.
+All functions from Node.JS are supported. 
+Since 4.0.0-alph2, the hashFunction can now be a constructor to a custom hash function.
+You can provide a non-crypto hash function for performance reasons.
+
+``` js
+module.exports = {
+  // ...
+  output: {
+    hashFunction: require('metrohash').MetroHash64
+  }
+};
+```
+
+Make sure that the hashing function will have update and digest methods available.
+
+## output.hashSalt
+
+An optional salt to update the hash via Node.JS`hash.update.
+
+## output.hotUpdateChunkFilename
+
+string function
+
+Customize the filenames of hot update chunks.
+See output.filename option for details on the possible values.
+
+The only placeholders allowed here are [ id ] and [ hash ], the default being：
+
+webpack.config.js
+
+``` js
+module.exports = {
+  // ...
+  output: {
+    hotUpdateChunkFilename: '[id].[hash].hot-update.js'
+  }
+};
+```
+
+Here is no need to change it.
+
+## output.hotUpdateFunction
+
+function
+
+only used when target is web, which uses JSONP for loading hot updates.
+
+A JSONP function used to asynchronously load hot-update chunks.
+
+For details see output.jsonpFunction.
+
+## output.hotUpdateMainFilename
+
+string function
+
+Customize the main hot upldate filename.
+See output.filename option for details on the possible values.
+
+[ hash ] is the only available placeholder, the default being:
+
+webpack.config.js
+
+``` js
+module.exports = {
+  // ...
+  output: {
+    hotUpdateMainFilename: '[hash].hot-update.json'
+  }
+};
+```
+
+Here is no need to change it.
+
+## output.jsonpFunction
+
+string 
+
+Only used when target is web, which uses JSONP for loading on-demand chunks.
+
+A JSONP function name used to asynchronously load chunks or join multiple initial chunks (SplitChunksPlugin, AggessiveSplittingPlugin).
+
+This needs to be changed if multiple webpack runtimes(from different compilation) are used on the same webpage.
+
+If using the output.library option, the library name is automatically appended.
+
+## output.library
+
+string or object(since webpack 3.1.0; for libraryTarget: 'umd')
+
+How the value of the output.library is used depends on the value of the output.libraryTarget option;
+
+Please refer to that section for the complete details.
+
+Note that the default option for output.libraryTarget is var, so if the following configuration option is used:
+
+webpack.config.js
+
+``` js
+module.exports = {
+  // ...
+  output: {
+    library: 'MyLibrary'
+  }
+};
+```
+
+The variable MyLibrary will be bound with the return value of your entry file, if the resulting output is included as a script tag in an HTML page.
+
+## output.libraryExport
+
+string | string[]
+
+Configure which module or modules will be exposed via libraryTarget. It is undefined by default, same behaviour will be applied if you set libraryTarget to an empty string e.g. '' it will export the whole (namespace) object. 
+
+The examples below demonstrate the effect of this config when using libraryTarget: 'var'.
+
+The following configurations are supported:
+
+libraryExport: 'default' - The default export of your entry point will be assigned to the library target:
+
+``` js
+// if your entry has a default export of 'MyDefaultModule'
+var MyDefaultModule = _entry_return_.default;
+```
+
+libraryExport: 'MyModule' - The specified module will be assigned to the library target:
+
+``` js
+var MyModule = _entry_return_.MyModule;
+```
+
+libraryExport: ['MyModule', 'MySubModule'] - The array is interpreted as a path to a module to be assigned to the library target:
+
+``` js
+var MySubModule = _entry_return_.MyModule.MySubModule;
+```
+
+With the libraryExport configurations specified above, the resulting libraries could be utilized as such:
+
+``` js
+MyDefaultModule.doSomething();
+MyModule.doSomething();
+MySubModule.doSomething();
+```
